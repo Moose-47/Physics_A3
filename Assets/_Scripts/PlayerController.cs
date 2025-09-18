@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider))]
+[RequireComponent(typeof(LineRenderer), typeof(AudioSource))]
 public class PlayerController : MonoBehaviour
 {
     //----- MOVEMENT SETTINGS -----
@@ -20,6 +21,11 @@ public class PlayerController : MonoBehaviour
     public LineRenderer lr;              //LineRenderer component to show a visible laser/shot
     public Transform muzzleTransform;    //The point where the laser starts (usually at the gun or camera)
     public float laserDuration = 0.05f;  //How long the laser appears on screen
+
+    //----- Sounds -----
+    [Header("Sounds")]
+    private AudioSource audioSource;    //The AudioSource attached to the player
+    public AudioClip shootSfx;          //The audio clip for the shooting sound effect
 
     //----- INTERNAL VARIABLES -----
     private Rigidbody rb;             //The Rigidbody attached to the player
@@ -124,6 +130,8 @@ public class PlayerController : MonoBehaviour
     //----- SHOOTING FUNCTION -----
     private void Shoot()
     {
+        audioSource.PlayOneShot(shootSfx); //Play the shoot sound effect
+
         //Create a ray from the camera forward
         Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
         Vector3 endPoint; //Where the laser will end (hit point or max distance)
