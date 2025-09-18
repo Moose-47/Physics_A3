@@ -93,7 +93,6 @@ public class PlayerController : MonoBehaviour
         Vector3 smoothedVelocity = Vector3.Lerp(currentHorizontalVelocity, targetHorizontalVelocity, 0.2f);
 
         //Apply the smoothed horizontal velocity while keeping the current vertical velocity
-        //This allows Unity's gravity to act normally on the player
         rb.linearVelocity = new Vector3(smoothedVelocity.x, rb.linearVelocity.y, smoothedVelocity.z);
 
         //----- CLAMP MAX HORIZONTAL SPEED -----
