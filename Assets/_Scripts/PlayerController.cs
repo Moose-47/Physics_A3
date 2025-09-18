@@ -66,28 +66,38 @@ public class PlayerController : MonoBehaviour
     //----- MOVEMENT HANDLING -----
     private void FixedUpdate()
     {
-        //Calculate movement direction relative to the camera
-        Vector3 forward = cameraTransform.forward;  //Forward direction of the camera
-        Vector3 right = cameraTransform.right;      //Right direction of the camera
+        //----- CALCULATE MOVEMENT DIRECTION -----
+        // Get the forward and right directions relative to the camera
+        Vector3 forward = cameraTransform.forward;
+        Vector3 right = cameraTransform.right;
 
-        //Remove vertical component so movement is always horizontal
+        //Ignore any vertical component so player only moves horizontally
         forward.y = 0f;
         right.y = 0f;
-        forward.Normalize(); //Normalize makes the length of the vector 1
+
+        //Normalize to ensure consistent movement speed
+        forward.Normalize();
         right.Normalize();
 
-        //Combine WASD input with camera directions
-        Vector3 moveDir = forward * moveInput.y + right * moveInput.x; //Forward/back + left/right
-        Vector3 targetVelocity = moveDir * moveSpeed; //Multiply by speed to get final velocity
+        //Combine input (WASD) with camera directions
+        Vector3 moveDir = forward * moveInput.y + right * moveInput.x;
 
-        //Keep existing vertical velocity so gravity works naturally
-        targetVelocity.y = rb.linearVelocity.y;
+        //Calculate the target horizontal velocity
+        Vector3 targetHorizontalVelocity = moveDir * moveSpeed;
 
-        //Smoothly blend current velocity to target velocity
-        //Lerp makes movement feel less jerky
-        rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, targetVelocity, 0.2f);
+        //----- SMOOTH HORIZONTAL VELOCITY -----
+        //Extract current horizontal velocity (X/Z) and ignore vertical (Y)
+        Vector3 currentHorizontalVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 
-        //Clamp horizontal speed so player can't move too fast
+        //Smoothly interpolate from current to target velocity for smoother movement
+        Vector3 smoothedVelocity = Vector3.Lerp(currentHorizontalVelocity, targetHorizontalVelocity, 0.2f);
+
+        //Apply the smoothed horizontal velocity while keeping the current vertical velocity
+        //This allows Unity's gravity to act normally on the player
+        rb.linearVelocity = new Vector3(smoothedVelocity.x, rb.linearVelocity.y, smoothedVelocity.z);
+
+        //----- CLAMP MAX HORIZONTAL SPEED -----
+        //Prevent the player from moving too fast horizontally
         Vector3 horizontalVel = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
         if (horizontalVel.magnitude > maxVelocity)
         {
@@ -130,7 +140,7 @@ public class PlayerController : MonoBehaviour
     //----- SHOOTING FUNCTION -----
     private void Shoot()
     {
-        audioSource.PlayOneShot(shootSfx); //Play the shoot sound effect
+        //audioSource.PlayOneShot(shootSfx); //Play the shoot sound effect
 
         //Create a ray from the camera forward
         Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
