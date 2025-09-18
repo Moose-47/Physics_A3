@@ -94,7 +94,17 @@ public class PlayerController : MonoBehaviour
     private void LateUpdate()
     {
         HandleLook(); //Update camera rotation after all other updates
-        //We use LateUpdate so camera movement is smooth and matches the frame
+                      //We use LateUpdate so camera movement is smooth and matches the frame
+
+        //--- LASER TIMER LOGIC ---
+        if (lr != null && lr.enabled) //Only run if the laser is currently visible
+        {
+            laserTimer -= Time.deltaTime; //Reduce timer by the time since last frame
+            if (laserTimer <= 0f)
+            {
+                lr.enabled = false; //Turn off the laser
+            }
+        }
     }
 
     private void HandleLook()
