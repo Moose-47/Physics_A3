@@ -42,7 +42,8 @@ public class PauseMenuUI : MonoBehaviour
         Time.timeScale = 0.0f;
         pauseMenu.SetActive(true);
         settingsMenu.SetActive(false);
-
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
     private void SettingsMenu()
     {
@@ -54,6 +55,8 @@ public class PauseMenuUI : MonoBehaviour
         Time.timeScale = 1.0f;
         pauseMenu.SetActive(false);
         settingsMenu.SetActive(false);
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
     private void QuitGame()
     {

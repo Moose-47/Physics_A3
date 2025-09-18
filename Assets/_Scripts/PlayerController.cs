@@ -39,6 +39,7 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>(); //Get the Rigidbody component attached to this GameObject
         rb.constraints = RigidbodyConstraints.FreezeRotation; //Prevent player from tipping over
+        audioSource = GetComponent<AudioSource>();
 
         //Lock the mouse cursor to the center of the screen
         Cursor.lockState = CursorLockMode.Locked;
@@ -59,7 +60,7 @@ public class PlayerController : MonoBehaviour
     //Called automatically when the player presses the Fire button
     public void OnFire(InputAction.CallbackContext context)
     {
-        if (context.performed) //Only do this when the button is first pressed (not released)
+        if (context.performed && Time.timeScale != 0) //Only do this when the button is first pressed (not released)
             Shoot();           //Call the Shoot function
     }
 
@@ -108,6 +109,7 @@ public class PlayerController : MonoBehaviour
     // ----- CAMERA LOOK HANDLING -----
     private void LateUpdate()
     {
+        if (Time.timeScale == 0) return;
         HandleLook(); //Update camera rotation after all other updates
                       //We use LateUpdate so camera movement is smooth and matches the frame
 
