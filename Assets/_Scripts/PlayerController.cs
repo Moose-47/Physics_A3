@@ -140,7 +140,7 @@ public class PlayerController : MonoBehaviour
     //----- SHOOTING FUNCTION -----
     private void Shoot()
     {
-        //audioSource.PlayOneShot(shootSfx); //Play the shoot sound effect
+        audioSource.PlayOneShot(shootSfx); //Play the shoot sound effect
 
         //Create a ray from the camera forward
         Ray ray = new Ray(cameraTransform.position, cameraTransform.forward);
